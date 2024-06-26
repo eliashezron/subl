@@ -3,8 +3,7 @@ import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
 import util from "util";
-
-import { pool } from "../db.js";
+import { supabase } from "../supabaseClient.js"; // Import the Supabase client
 
 import { readFile } from "fs/promises";
 const antiCheatJson = JSON.parse(
@@ -17,21 +16,37 @@ const readFileAsync = util.promisify(fs.readFile);
 
 export const getExercisesByUser = async (req, res, next) => {
   const user = req.params.user;
-  const result = await pool.query(
-    "SELECT * FROM Resolutions WHERE user_name = $1",
-    [user]
-  );
-  return res.json(result.rows);
+  console.log(`Fetching exercises for user: ${user}`);
+
+  try {
+    const result = await supabase
+      .from('resolutions')
+      .select('*')
+      .eq('user_name', user);
+
+    if (result.error) {
+      console.error('Error fetching exercises:', result.error);
+      return res.status(500).json({ error: result.error.message });
+    }
+
+    return res.json(result.data);
+  } catch (error) {
+    console.error('Unexpected error fetching exercises:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 export const matchUser = async (req, res, next) => {
   const user = req.params.user;
   const newUser = req.params.newUser;
 
-  await pool.query(
-    "UPDATE resolutions SET user_name = $1 WHERE user_name = $2",
-    [newUser, user]
-  );
+  const { data, error } = await supabase
+    .from('resolutions')
+    .update({ user_name: newUser })
+    .eq('user_name', user);
+
+  if (error) return res.status(500).json({ error });
+
   return res.status(200).json({ message: "ok" });
 };
 
@@ -69,7 +84,6 @@ export const resolveExercise = async (req, res, next) => {
 
   const antiCheatExercise = antiCheatJson[exercise_id];
 
-  //check if the provided code needs to contain something
   const shouldContain = antiCheatExercise?.shouldContain;
   if (shouldContain?.length > 0) {
     shouldContain.forEach((line) => {
@@ -92,7 +106,7 @@ export const resolveExercise = async (req, res, next) => {
     }
   }
 
-  console.log("antiCheatCOde", antiCheatCode);
+  console.log("antiCheatCode", antiCheatCode);
   try {
     if (!(await existFolder(destinationFolder))) {
       await executeScarbNew(safeUser, tempFolder, destinationFolder);
@@ -105,10 +119,13 @@ export const resolveExercise = async (req, res, next) => {
       log = await executeScarbTest(destinationFolder);
     }
 
-    await pool.query(
-      "INSERT INTO Resolutions (user_name, exercise_id) VALUES ($1, $2) ON CONFLICT (user_name, exercise_id) DO NOTHING",
-      [user, exercise_id]
-    );
+    const { data, error } = await supabase
+      .from('resolutions')
+      .insert([{ user_name: user, exercise_id }])
+      .onConflict(['user_name', 'exercise_id'])
+      .ignore();
+
+    if (error) return res.status(500).json({ error });
 
     return res.status(200).json({ message: log });
   } catch (error) {
@@ -119,14 +136,24 @@ export const resolveExercise = async (req, res, next) => {
 export const markExerciseDone = async (req, res, next) => {
   const user = req.params.user;
   const exercise_id = req.params.exercise;
+  console.log(`Marking exercise ${exercise_id} as done for user ${user}`);
+
   try {
-    await pool.query(
-      "INSERT INTO Resolutions (user_name, exercise_id) VALUES ($1, $2) ON CONFLICT (user_name, exercise_id) DO NOTHING",
-      [user, exercise_id]
-    );
-    return res.status(200).json({ message: "ok" });
+    const { data, error } = await supabase
+      .from('resolutions')
+      .upsert([{ user_name: user, exercise_id }], { onConflict: ['user_name', 'exercise_id'] });
+
+    if (error) {
+      console.error('Error marking exercise as done:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    console.log('Insert/Upsert response data:', data);
+
+    return res.status(200).json({ message: "Exercise marked as done" });
   } catch (error) {
-    return next(error);
+    console.error('Unexpected error marking exercise as done:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -234,12 +261,5 @@ function appendCodeToFunction(code, functionName = "main", codeLine) {
   const functionBody = code.slice(functionIndex, endFunctionIndex);
   const lastLine = functionBody.trim().split("\n").pop().trim();
 
-  // Append the code line inside the function
-  let modifiedCode = code.slice(0, endFunctionIndex);
-  if (!lastLine.endsWith(";") && !lastLine.endsWith("}")) {
-    modifiedCode += ";"; // Add semicolon if last line doesn't end with one
-  }
-  modifiedCode += `\n    ${codeLine}\n${code.slice(endFunctionIndex)}`;
-
-  return modifiedCode;
+  // Append the code
 }
