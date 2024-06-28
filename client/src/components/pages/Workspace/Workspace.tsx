@@ -1,4 +1,5 @@
 import { Editor } from "@monaco-editor/react";
+import ReactMarkdown from 'react-markdown';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Alert,
@@ -33,7 +34,7 @@ import { useMarkExerciseDone } from "../../../queries/useMarkExerciseDone";
 export const Workspace = () => {
   const worker: Worker = useMemo(
     () =>
-      new Worker(new URL("../../../workers/cairoWorker.ts", import.meta.url)),
+      new Worker(new URL("../../../workers/rustWorker.ts", import.meta.url)),
     []
   );
 
@@ -125,6 +126,7 @@ export const Workspace = () => {
       }
     };
   };
+  
 
   const handleHintClick = async () => {
     getHint();
@@ -177,9 +179,11 @@ export const Workspace = () => {
                 {isLoading && <CircularProgressCenterLoader />}
                 {data && (
                   <Typography style={{ whiteSpace: "pre-line" }}>
+                    {/* <ReactMarkdown> */}
                     {data.description?.trim() !== ""
                       ? data.description
                       : "Having trouble to solve this one? Click 'GET HINT' button for help!"}
+                    {/* </ReactMarkdown> */}
                   </Typography>
                 )}
               </Box>
@@ -197,21 +201,21 @@ export const Workspace = () => {
                       {hint}
                       <br />
                       <br />
-                      Remember that you can always check the Cairo book at{" "}
+                      Remember that you can always check the Rust book at{" "}
                       <Link
                         target="_blank"
                         sx={{ color: "#FFF", fontStyle: "italic" }}
-                        href={"https://book.cairo-lang.org/"}
+                        href={"https://doc.rust-lang.org/book/"}
                       >
-                        https://book.cairo-lang.org/
+                        https://doc.rust-lang.org/book/
                       </Link>{" "}
-                      or the Cairo documentation at{" "}
+                      or the polkadot-sdk documentation at{" "}
                       <Link
                         target="_blank"
                         sx={{ color: "#FFF", fontStyle: "italic" }}
-                        href={"https://docs.cairo-lang.org/"}
+                        href={"https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html"}
                       >
-                        https://docs.cairo-lang.org/
+                        https://paritytech.github.io/polkadot-sdk/
                       </Link>
                       .
                     </Typography>

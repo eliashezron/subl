@@ -31,6 +31,42 @@ app.get("/api/ping", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   return res.json(result.rows[0]);
 });
+app.post('/api/compile', (req, res) => {
+  const { code } = req.body;
+  
+  // Save the code to a temporary file
+  const filePath = path.join(__dirname, 'temp.rs');
+  fs.writeFileSync(filePath, code);
+
+  // Compile the code using rustc
+  exec(`rustc ${filePath} -o temp`, (error, stdout, stderr) => {
+      if (error) {
+          return res.json({
+              success: false,
+              message: stderr
+          });
+      }
+
+      // Execute the compiled binary
+      exec('./temp', (runError, runStdout, runStderr) => {
+          if (runError) {
+              return res.json({
+                  success: false,
+                  message: runStderr
+              });
+          }
+
+          // Clean up the temporary files
+          fs.unlinkSync(filePath);
+          fs.unlinkSync(path.join(__dirname, 'temp'));
+
+          return res.json({
+              success: true,
+              message: runStdout
+          });
+      });
+  });
+});
 
 app.use("/api", exercisesRoutes);
 app.use("/api", userRoutes);
