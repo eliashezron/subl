@@ -1,26 +1,47 @@
-import { compileRustProgram, runRustProgram } from "../pkg_rusty/wasm_rust";
+import { compileCairoProgram, runTests } from "../pkg/module/wasm-cairo";
 import { ICompilationResult } from "../types/compilation";
 import { Append } from "../types/exercise";
 import { antiCheatAppend } from "./antiCheat";
 
 export const runRustCode = (
   code: string,
-  mode: "COMPILE" | "TEST",
+  mode: "COMPILE" | "TEST" | "TEST_CONTRACT",
   append?: Append
 ): ICompilationResult => {
   let result;
   const antiCheatCode = antiCheatAppend(code, append);
-
   if (mode === "TEST") {
-    result = runRustProgram(antiCheatCode);
+    result = runTests(
+      antiCheatCode,
+      false,
+      "",
+      false,
+      false,
+      false,
+      "",
+      false,
+      false
+    );
     console.log("TEST RESULT: ", result);
+  } else if (mode === "TEST_CONTRACT") {
+    result = runTests(
+      antiCheatCode,
+      false,
+      "",
+      false,
+      false,
+      true,
+      "",
+      false,
+      false
+    );
+    console.log("TEST CONTRACT RESULT: ", result);
   } else {
-    result = compileRustProgram(antiCheatCode);
+    result = compileCairoProgram(antiCheatCode, false);
     console.log("COMPILE RESULT: ", result);
   }
-
   if (
-    result.startsWith("Compilation failed") ||
+    result.startsWith("failed to compile") ||
     result.includes("test result APPEND: FAILED") ||
     !code ||
     code.trim() === ""

@@ -13,12 +13,14 @@ import userRoutes from "./routes/user.routes.js";
 const app = express();
 
 // Middlewares
-app.use(
-  cors({
-    origin: ORIGIN,
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ORIGIN,
+//     credentials: true,
+//   })
+// );
+// Enable all CORS requests
+app.use(cors());
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
