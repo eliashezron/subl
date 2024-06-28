@@ -1,8 +1,6 @@
-import runTests from "../pkg_rusty/wasm_rust";
-import init, { compileRustProgram, runRustProgram} from "../pkg_rusty/wasm_rust";
-import __wbg_init from "../pkg_rusty/wasm_rust";
+import init, { compileRustProgram, runRustProgram } from '../pkg_rusty/wasm_rust';
 
-const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
+const url = new URL('../pkg_rusty/wasm_rust_bg.wasm', import.meta.url).href;
 
 (async () => {
   await init(url); // Initialize the WASM module
@@ -21,18 +19,23 @@ addEventListener('message', async (event) => {
       console.log('COMPILE RESULT: ', result);
     }
 
-    if (typeof result === 'string' && result.startsWith('Compilation failed') || !code || code.trim() === '') {
-      return postMessage({
-        success: false,
-        result,
-        error: result,
-      });
-    }
+    // Check the response format
+    if (result && typeof result === 'object' && 'success' in result && 'message' in result) {
+      if (!result.success || !code || code.trim() === '') {
+        return postMessage({
+          success: false,
+          result: result.message,
+          error: result.message,
+        });
+      }
 
-    return postMessage({
-      success: true,
-      result,
-    });
+      return postMessage({
+        success: true,
+        result: result.message,
+      });
+    } else {
+      throw new Error('Invalid response format');
+    }
   } catch (error) {
     console.error('Error during Rust function execution:', error);
 
