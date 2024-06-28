@@ -4,6 +4,7 @@ import express from "express";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 import { ORIGIN } from "./config.js";
 import { pool } from "./db.js";
