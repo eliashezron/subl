@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import { ORIGIN } from "./config.js";
 import { pool } from "./db.js";
@@ -27,6 +28,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: false }));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Routes
 app.get("/", (req, res) => res.json({ message: "Welcome to Starklings API" }));
