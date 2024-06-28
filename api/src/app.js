@@ -44,12 +44,14 @@ app.get("/api/ping", async (req, res) => {
 });
 app.post('/api/compile', (req, res) => {
   const { code } = req.body;
+
   // Save the code to a temporary file
   const filePath = path.join(__dirname, 'temp.rs');
+  const outputFilePath = path.join(__dirname, 'temp');
   fs.writeFileSync(filePath, code);
 
   // Compile the code using rustc
-  exec(`rustc ${filePath} -o temp`, (error, stdout, stderr) => {
+  exec(`rustc ${filePath} -o ${outputFilePath}`, (error, stdout, stderr) => {
       if (error) {
           const response = {
               success: false,
@@ -60,7 +62,7 @@ app.post('/api/compile', (req, res) => {
       }
 
       // Execute the compiled binary
-      exec('./temp', (runError, runStdout, runStderr) => {
+      exec(outputFilePath, (runError, runStdout, runStderr) => {
           if (runError) {
               const response = {
                   success: false,
@@ -71,8 +73,16 @@ app.post('/api/compile', (req, res) => {
           }
 
           // Clean up the temporary files
-          fs.unlinkSync(filePath);
-          fs.unlinkSync(path.join(__dirname, 'temp'));
+          try {
+              if (fs.existsSync(filePath)) {
+                  fs.unlinkSync(filePath);
+              }
+              if (fs.existsSync(outputFilePath)) {
+                  fs.unlinkSync(outputFilePath);
+              }
+          } catch (cleanupError) {
+              console.error('Error during cleanup:', cleanupError);
+          }
 
           const response = {
               success: true,
