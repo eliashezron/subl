@@ -58,6 +58,19 @@ app.post('/api/compile', (req, res) => {
               message: stderr
           };
           console.log(response);
+
+          // Clean up the temporary files and exit gracefully
+          try {
+              if (fs.existsSync(filePath)) {
+                  fs.unlinkSync(filePath);
+              }
+              if (fs.existsSync(outputFilePath)) {
+                  fs.unlinkSync(outputFilePath);
+              }
+          } catch (cleanupError) {
+              console.error('Error during cleanup:', cleanupError);
+          }
+
           return res.json(response);
       }
 
@@ -69,6 +82,19 @@ app.post('/api/compile', (req, res) => {
                   message: runStderr
               };
               console.log(response);
+
+              // Clean up the temporary files and exit gracefully
+              try {
+                  if (fs.existsSync(filePath)) {
+                      fs.unlinkSync(filePath);
+                  }
+                  if (fs.existsSync(outputFilePath)) {
+                      fs.unlinkSync(outputFilePath);
+                  }
+              } catch (cleanupError) {
+                  console.error('Error during cleanup:', cleanupError);
+              }
+
               return res.json(response);
           }
 
