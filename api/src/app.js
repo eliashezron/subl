@@ -42,7 +42,11 @@ app.get("/api/ping", async (req, res) => {
 });
 app.post('/api/compile', (req, res) => {
   const { code } = req.body;
-  
+
+  // Set CORS headers manually
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
   // Save the code to a temporary file
   const filePath = path.join(__dirname, 'temp.rs');
   fs.writeFileSync(filePath, code);
@@ -50,29 +54,35 @@ app.post('/api/compile', (req, res) => {
   // Compile the code using rustc
   exec(`rustc ${filePath} -o temp`, (error, stdout, stderr) => {
       if (error) {
-          return res.json({
+          const response = {
               success: false,
               message: stderr
-          });
+          };
+          console.log(response);
+          return res.json(response);
       }
 
       // Execute the compiled binary
       exec('./temp', (runError, runStdout, runStderr) => {
           if (runError) {
-              return res.json({
+              const response = {
                   success: false,
                   message: runStderr
-              });
+              };
+              console.log(response);
+              return res.json(response);
           }
 
           // Clean up the temporary files
           fs.unlinkSync(filePath);
           fs.unlinkSync(path.join(__dirname, 'temp'));
 
-          return res.json({
+          const response = {
               success: true,
               message: runStdout
-          });
+          };
+          console.log(response);
+          return res.json(response);
       });
   });
 });
