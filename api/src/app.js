@@ -5,6 +5,7 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { exec } from 'child_process';
 
 import { ORIGIN } from "./config.js";
 import { pool } from "./db.js";
