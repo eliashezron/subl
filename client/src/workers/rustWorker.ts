@@ -19,23 +19,18 @@ addEventListener('message', async (event) => {
       console.log('COMPILE RESULT: ', result);
     }
 
-    // Check the response format
-    if (result && typeof result === 'object' && 'success' in result && 'message' in result) {
-      if (!result.success || !code || code.trim() === '') {
-        return postMessage({
-          success: false,
-          result: result.message,
-          error: result.message,
-        });
-      }
-
+    if (typeof result === 'string' && result.startsWith('Compilation failed') || !code || code.trim() === '') {
       return postMessage({
-        success: true,
-        result: result.message,
+        success: false,
+        result,
+        error: result,
       });
-    } else {
-      throw new Error('Invalid response format');
     }
+
+    return postMessage({
+      success: true,
+      result,
+    });
   } catch (error) {
     console.error('Error during Rust function execution:', error);
 

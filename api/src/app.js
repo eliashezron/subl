@@ -17,14 +17,16 @@ import userRoutes from "./routes/user.routes.js";
 const app = express();
 
 // Middlewares
-// app.use(
-//   cors({
-//     origin: ORIGIN,
-//     credentials: true,
-//   })
-// );
 // Enable all CORS requests
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow all methods
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'], // Allow all headers
+  credentials: true,
+  optionsSuccessStatus: 204 // For legacy browser support
+}));
+// Enable all CORS requests
+// app.use(cors());
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
@@ -42,11 +44,6 @@ app.get("/api/ping", async (req, res) => {
 });
 app.post('/api/compile', (req, res) => {
   const { code } = req.body;
-
-  // Set CORS headers manually
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
   // Save the code to a temporary file
   const filePath = path.join(__dirname, 'temp.rs');
   fs.writeFileSync(filePath, code);
