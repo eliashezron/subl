@@ -120,6 +120,60 @@ app.post('/api/compile', (req, res) => {
   });
 });
 
+app.post('/api/run-tests', (req, res) => {
+    const { code } = req.body;
+  
+    // Save the code to a temporary file
+    const filePath = path.join(__dirname, 'temp_test.rs');
+    const outputFilePath = path.join(__dirname, 'temp_test');
+  
+    fs.writeFileSync(filePath, code);
+  
+    // Compile the code with --test flag
+    exec(`rustc --test ${filePath} -o ${outputFilePath}`, (error, stdout, stderr) => {
+      if (error) {
+        const response = {
+          success: false,
+          message: stderr
+        };
+        console.log(response);
+        return res.json(response);
+      }
+  
+      // Run the tests in the compiled binary
+      exec(outputFilePath, (runError, runStdout, runStderr) => {
+        if (runError) {
+          const response = {
+            success: false,
+            message: runStderr
+          };
+          console.log(response);
+          return res.json(response);
+        }
+  
+        // Clean up the temporary files
+        try {
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+          if (fs.existsSync(outputFilePath)) {
+            fs.unlinkSync(outputFilePath);
+          }
+        } catch (cleanupError) {
+          console.error('Error during cleanup:', cleanupError);
+        }
+  
+        const response = {
+          success: true,
+          message: runStdout
+        };
+        console.log(response);
+        return res.json(response);
+      });
+    });
+  });
+  
+
 app.use("/api", exercisesRoutes);
 app.use("/api", userRoutes);
 app.use("/api", githubRoutes);

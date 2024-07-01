@@ -17,3 +17,7 @@ mod balances {
         }
     }
 }
+
+fn main() {
+    println!("we have added state to our balances module.");
+}

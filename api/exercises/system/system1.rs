@@ -1,4 +1,4 @@
-/* TODO: a module named balances, this will hold the logic of our balances pallet */
+/* TODO: a module named system, this will hold the logic of our system pallet */
 mod _{
     //unimplemeted!(); 
 }

@@ -1,6 +1,7 @@
 export interface IExercise {
   id: string;
   name: string;
+  title:string;
   path: string;
   mode: "run" | "test";
   exercise_group?: string;

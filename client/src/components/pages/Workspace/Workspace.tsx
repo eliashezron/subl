@@ -88,11 +88,7 @@ export const Workspace = () => {
   const handleCompileClick = async () => {
     let mode;
     if (data?.mode === "test") {
-      if (data?.id.startsWith("starknet")) {
-        mode = "TEST_CONTRACT";
-      } else {
         mode = "TEST";
-      }
     } else {
       mode = "COMPILE";
     }
@@ -174,7 +170,7 @@ export const Workspace = () => {
               {/* description */}
               <Box sx={{ px: 8, py: 6 }}>
                 <Typography sx={{ mb: 4 }} variant="h4">
-                  {data?.name}
+                  {data?.title}
                 </Typography>
                 {isLoading && <CircularProgressCenterLoader />}
                 {data && (

@@ -1,6 +1,8 @@
-import init, { compileRustProgram, runRustProgram } from '../pkg_rusty/wasm_rust';
+import runTests from "../pkg_rusty/wasm_rust";
+import init, { compileRustProgram, runRustProgram} from "../pkg_rusty/wasm_rust";
+import __wbg_init from "../pkg_rusty/wasm_rust";
 
-const url = new URL('../pkg_rusty/wasm_rust_bg.wasm', import.meta.url).href;
+const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
 
 (async () => {
   await init(url); // Initialize the WASM module
@@ -19,7 +21,7 @@ addEventListener('message', async (event) => {
       console.log('COMPILE RESULT: ', result);
     }
 
-    if (typeof result === 'string' && result.startsWith('Compilation failed') || !code || code.trim() === '') {
+    if (typeof result === 'string' && (result.startsWith('Compilation failed') || !code || code.trim() === '')) {
       return postMessage({
         success: false,
         result,

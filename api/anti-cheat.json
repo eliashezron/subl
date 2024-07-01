@@ -1,4 +1,10 @@
 {
+  "balances4": {
+    "append": {
+      "to": "main",
+      "code": "#[test]\nfn init_balances()  {\n    assert(sum_u8s(1, 2_u8) == 3_u8, 'Something went wrong');\n}\n\n#[test]\nfn test_convert_to_felt_duplicate() {\n    assert(convert_to_felt(1_u8) == 1, 'Type conversion went wrong');\n}\n\n#[test]\nfn test_convert_to_u8_duplicate() {\n    assert(convert_felt_to_u8(1) == 1_u8, 'Type conversion went wrong');\n}\n"
+    }
+  },
   "variables1": {
     "append": {
       "to": "main",
