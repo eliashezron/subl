@@ -12,8 +12,6 @@ mod balances {
         /// Create a new instance of the balances module.
         pub fn new() -> Self {
             /* TODO: Return a new instance of the `Pallet` struct. */
-            /* TODO: Remove `unimplemented!()`. */
-            unimplemented!()
         }
     }
 }
