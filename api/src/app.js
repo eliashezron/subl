@@ -126,50 +126,75 @@ app.post('/api/run-tests', (req, res) => {
     // Save the code to a temporary file
     const filePath = path.join(__dirname, 'temp_test.rs');
     const outputFilePath = path.join(__dirname, 'temp_test');
-  
     fs.writeFileSync(filePath, code);
   
-    // Compile the code with --test flag
-    exec(`rustc --test ${filePath} -o ${outputFilePath}`, (error, stdout, stderr) => {
-      if (error) {
-        const response = {
-          success: false,
-          message: stderr
-        };
-        console.log(response);
-        return res.json(response);
-      }
+  // Compile the code with --test flag
+  exec(`rustc --test ${filePath} -o ${outputFilePath}`, (error, stdout, stderr) => {
+        if (error) {
+            const response = {
+                success: false,
+                message: stderr
+            };
+            console.log(response);
   
-      // Run the tests in the compiled binary
-      exec(outputFilePath, (runError, runStdout, runStderr) => {
-        if (runError) {
-          const response = {
-            success: false,
-            message: runStderr
-          };
-          console.log(response);
-          return res.json(response);
+            // Clean up the temporary files and exit gracefully
+            try {
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+                if (fs.existsSync(outputFilePath)) {
+                    fs.unlinkSync(outputFilePath);
+                }
+            } catch (cleanupError) {
+                console.error('Error during cleanup:', cleanupError);
+            }
+  
+            return res.json(response);
         }
   
-        // Clean up the temporary files
-        try {
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-          if (fs.existsSync(outputFilePath)) {
-            fs.unlinkSync(outputFilePath);
-          }
-        } catch (cleanupError) {
-          console.error('Error during cleanup:', cleanupError);
-        }
+        // Execute the compiled binary
+        exec(outputFilePath, (runError, runStdout, runStderr) => {
+            if (runError) {
+                const response = {
+                    success: false,
+                    message: runStderr
+                };
+                console.log(response);
   
-        const response = {
-          success: true,
-          message: runStdout
-        };
-        console.log(response);
-        return res.json(response);
-      });
+                // Clean up the temporary files and exit gracefully
+                try {
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                    if (fs.existsSync(outputFilePath)) {
+                        fs.unlinkSync(outputFilePath);
+                    }
+                } catch (cleanupError) {
+                    console.error('Error during cleanup:', cleanupError);
+                }
+  
+                return res.json(response);
+            }
+  
+            // Clean up the temporary files
+            try {
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+                if (fs.existsSync(outputFilePath)) {
+                    fs.unlinkSync(outputFilePath);
+                }
+            } catch (cleanupError) {
+                console.error('Error during cleanup:', cleanupError);
+            }
+  
+            const response = {
+                success: true,
+                message: runStdout
+            };
+            console.log(response);
+            return res.json(response);
+        });
     });
   });
   

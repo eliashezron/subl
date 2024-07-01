@@ -1,6 +1,4 @@
-import runTests from "../pkg_rusty/wasm_rust";
-import init, { compileRustProgram, runRustProgram} from "../pkg_rusty/wasm_rust";
-import __wbg_init from "../pkg_rusty/wasm_rust";
+import init, { compileRustProgram, runRustTests } from "../pkg_rusty/wasm_rust";
 
 const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
 
@@ -14,11 +12,9 @@ addEventListener('message', async (event) => {
   try {
     let result;
     if (mode === 'TEST') {
-      result = await runRustProgram(code);
-      console.log('TEST RESULT: ', result);
+      result = await runRustTests(code);
     } else {
       result = await compileRustProgram(code);
-      console.log('COMPILE RESULT: ', result);
     }
 
     if (typeof result === 'string' && (result.startsWith('Compilation failed') || !code || code.trim() === '')) {
