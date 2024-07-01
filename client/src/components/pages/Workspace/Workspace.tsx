@@ -88,15 +88,17 @@ export const Workspace = () => {
   const handleCompileClick = async () => {
     let mode;
     if (data?.mode === "test") {
-        mode = "TEST";
+      mode = "TEST";
     } else {
       mode = "COMPILE";
     }
+  
     worker.postMessage({
       code: editorValue,
       mode,
       append: data?.antiCheat?.append,
     });
+  
     setCompiling(true);
     setCompileError(undefined);
     setSucceeded(false);
@@ -105,7 +107,7 @@ export const Workspace = () => {
       const result = event.data;
       if (result.success) {
         try {
-          antiCheatShouldContain(editorValue, data?.antiCheat?.shouldContain);
+          antiCheatShouldContain(editorValue, data?.antiCheat?.shouldContain as never[] | undefined);
           nextId && localStorage.setItem(CURRENT_EXERCISE, nextId);
           setSucceeded(true);
           id && markExerciseDone(id);

@@ -7,9 +7,9 @@ use std::collections::BTreeMap;
 /// It handles low level state needed for your blockchain.
 pub struct Pallet {
     /// The current block number.
-    block_number: u32,
+    pub block_number: u32,
     /// A map from an account to their nonce.
-    nonce: BTreeMap<String, u32>,
+    pub nonce: BTreeMap<String, u32>,
 }
 
 impl Pallet {

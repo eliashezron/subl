@@ -1,4 +1,5 @@
 import init, { compileRustProgram, runRustTests } from "../pkg_rusty/wasm_rust";
+import { antiCheatAppend } from "../utils/antiCheat";
 
 const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
 
@@ -7,14 +8,16 @@ const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
 })();
 
 addEventListener('message', async (event) => {
-  const { code, mode } = event.data;
+  const { code, mode, append } = event.data;
 
   try {
     let result;
+    const antiCheatCode = antiCheatAppend(code, append);
+
     if (mode === 'TEST') {
-      result = await runRustTests(code);
+      result = await runRustTests(antiCheatCode);
     } else {
-      result = await compileRustProgram(code);
+      result = await compileRustProgram(antiCheatCode);
     }
 
     if (typeof result === 'string' && (result.startsWith('Compilation failed') || !code || code.trim() === '')) {

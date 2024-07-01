@@ -1,21 +1,17 @@
 import { Append } from "../types/exercise";
 
-export const antiCheatAppend = (code: string, append?: Append) => {
+export const antiCheatAppend = (code:string, append:Append) => {
   if (!append) {
     return code;
   }
   if (!append.to) {
-    return `${code}
-        ${append.code}`;
+    return `${code}\n${append.code}`;
   }
 
   return appendCodeToFunction(code, append.to, append.code);
 };
 
-export const antiCheatShouldContain = (
-  code: string,
-  shouldContainLines: string[] = []
-) => {
+export const antiCheatShouldContain = (code:string, shouldContainLines = []) => {
   if (shouldContainLines?.length > 0) {
     shouldContainLines.forEach((line) => {
       if (!code.includes(line)) {

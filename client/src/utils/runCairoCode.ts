@@ -9,7 +9,8 @@ export const runCairoCode = (
   append?: Append
 ): ICompilationResult => {
   let result;
-  const antiCheatCode = antiCheatAppend(code, append);
+  // const antiCheatCode = antiCheatAppend(code, append);
+  const antiCheatCode = code;
   if (mode === "TEST") {
     result = runTests(
       antiCheatCode,

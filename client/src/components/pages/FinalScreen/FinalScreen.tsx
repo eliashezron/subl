@@ -27,12 +27,12 @@ export const FinalScreen = () => {
     >
       <Logo text={"congratulations!"} fontSize="12.3vw" />
       <Typography sx={{ textAlign: "center", lineHeight: 1.6, mt: 2 }}>
-        You are a Cairo rockstar! <br />
-        Thank you for completing starklings. <br />
+        You are a Rust rockstar! <br />
+        Thank you for completing rust-state-machine. <br />
         Do you have any feedback for us?{" "}
         <Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
           <IconButton
-            href={"https://twitter.com/starklingsapp"}
+            href={"https://x.com/shawntabrizi"}
             target="_blank"
             sx={{ ml: 1, p: 0.5, color: "#FFF" }}
             aria-label="start-over"
@@ -40,7 +40,7 @@ export const FinalScreen = () => {
             <XIcon />
           </IconButton>
           <IconButton
-            href={"https://github.com/dpinones/starklings-app"}
+            href={"https://github.com/shawntabrizi/rust-state-machine"}
             target="_blank"
             sx={{ ml: 1, p: 0.5, color: "#FFF" }}
             aria-label="start-over"

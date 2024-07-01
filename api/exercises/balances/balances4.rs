@@ -34,7 +34,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::balances::Pallet;
     #[test]
     fn init_balances() {
         /* TODO: Create a mutable variable `balances`, which is a new instance of `Pallet`. */

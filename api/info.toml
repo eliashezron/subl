@@ -5,7 +5,7 @@ id = "intro1"
 name = "Intro 1"
 title= "Welcome to the Rust State Machine tutorial"
 path = "exercises/intro/intro1.rs"
-mode = "test"
+mode = "run"
 description = """
 Welcome to the Rust State Machine tutorial.
 This is a guided tutorial intended to teach readers the basics of Rust, Blockchain, and eventually the inner workings of the Polkadot SDK.
@@ -173,7 +173,7 @@ id = "system2"
 name = "system pallet 2"
 title = "Making Your System Functional"
 path = "exercises/system/system2.rs"
-mode = "run"
+mode = "test"
 description = """
 We have again established the basis of a new Pallet.
 
@@ -295,7 +295,7 @@ id = "system5"
 name = "system pallet 5"
 title = "Derive Debug"
 path = "exercises/system/system5.rs"
-mode = "run"
+mode = "test"
 description = """
 In Rust, derive macros provide a convenient way to automatically implement trait functionality for custom data structures.
 

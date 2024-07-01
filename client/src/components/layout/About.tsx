@@ -61,16 +61,16 @@ export const About = () => {
                 )}
                 <Grid xs={9} item>
                   The Subl App is an interactive web platform designed to
-                  assist users in embarking on their journey to learn Cairo.
+                  assist users in embarking on their journey to learn rust and Rust state Machine.
                   This platform is built upon{" "}
-                  <SimpleLink href="https://github.com/shramee/starklings-cairo1">
-                    Starklings
+                  <SimpleLink href="https://github.com/shawntabrizi/rust-state-machine">
+                    Rust state Machine
                   </SimpleLink>{" "}
                   exercises, which are considered essential for beginners
-                  seeking to grasp the fundamentals of Cairo.
+                  seeking to grasp the fundamentals of substrate and polkadot.
                   <br />
                   <br />
-                  Our objective is to simplify the Starklings experience by
+                  Our objective is to simplify the building a rust-state-machine experience by
                   eliminating complex configurations and installations. Simply
                   access the app through your browser and begin coding.
                 </Grid>
@@ -85,17 +85,17 @@ export const About = () => {
                 <ul>
                   <li>
                     Follow us on{" "}
-                    <SimpleLink href="https://twitter.com/starklingsapp">
+                    <SimpleLink href="https://x.com/shawntabrizi">
                       X
                     </SimpleLink>
                   </li>
                   <li>
                     Visit our{" "}
-                    <SimpleLink href="https://github.com/dpinones/starklings-app">
+                    <SimpleLink href="https://github.com/shawntabrizi/rust-state-machine">
                       GitHub
                     </SimpleLink>
                   </li>
-                  <li>
+                  {/* <li>
                     Follow Starknet on{" "}
                     <SimpleLink href="https://twitter.com/starknet">
                       X
@@ -111,8 +111,8 @@ export const About = () => {
                     <SimpleLink href="http://starknet.io/discord/">
                       Discord server
                     </SimpleLink>
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     Join the community{" "}
                     <SimpleLink href="https://t.me/+efDitGbILOFmMDNk">
                       Telegram group
@@ -130,8 +130,8 @@ export const About = () => {
                     <SimpleLink href="https://starknet.notion.site/Starknet-Basecamp-Hub-1541b3c1f49f439da872d3d71647d834">
                       Starknet Basecamp bootcamp
                     </SimpleLink>
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     Use your new Cairo skills to contribute to open-source
                     projects and earn rewards on{" "}
                     <SimpleLink href="https://app.onlydust.xyz/">
@@ -153,7 +153,7 @@ export const About = () => {
                     <SimpleLink href="https://book.starknet.io/">
                       Starknet book
                     </SimpleLink>
-                  </li>
+                  </li> */}
                 </ul>
               </Grid>
             </Grid>
@@ -162,7 +162,7 @@ export const About = () => {
         <DialogActions
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Typography sx={{ mx: 4 }}>Cairo version: 2.6.3</Typography>
+          {/* <Typography sx={{ mx: 4 }}>Cairo version: 2.6.3</Typography> */}
           <Button
             sx={{ m: 2 }}
             variant="contained"

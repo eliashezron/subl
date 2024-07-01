@@ -75,7 +75,7 @@ function App() {
                     <Typography
                       sx={{ mb: 1, mr: 2, fontSize: 13, color: "#b0b0b0" }}
                     >
-                      forked from starklings.app
+                      {/* forked from starklings.app */}
                     </Typography>
                   </Box>
                 </>

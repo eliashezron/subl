@@ -8,7 +8,7 @@ export const useGetExercises = (user = getUser()) => {
   return useQuery<IExercise[]>({
     queryKey: ["exercises"],
     queryFn: async () => {
-      const { data: exercises } = await axios.get(API_URL + "/exercises");
+      const { data: exercises } = await axios.get(`${API_URL}/exercises`);
       const { data: completedExercises } = await axios.get(
         `${API_URL}/user/${user}/exercise`
       );
