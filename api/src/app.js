@@ -124,79 +124,57 @@ app.post('/api/run-tests', (req, res) => {
     const { code } = req.body;
   
     // Save the code to a temporary file
-    const filePath = path.join(__dirname, 'temp_test.rs');
-    const outputFilePath = path.join(__dirname, 'temp_test');
+    const filePath = path.join(__dirname, 'temp.rs');
+    const outputFilePath = path.join(__dirname, 'temp');
     fs.writeFileSync(filePath, code);
   
-  // Compile the code with --test flag
-  exec(`rustc --test ${filePath} -o ${outputFilePath}`, (error, stdout, stderr) => {
+    // Write a Cargo.toml file to define a package
+    const cargoToml = `
+      [package]
+      name = "temp"
+      version = "0.1.0"
+      edition = "2018"
+  
+      [dependencies]
+    `;
+    const cargoDir = path.join(__dirname, 'cargo_temp');
+    if (!fs.existsSync(cargoDir)) {
+      fs.mkdirSync(cargoDir);
+    }
+    fs.writeFileSync(path.join(cargoDir, 'Cargo.toml'), cargoToml);
+    if (!fs.existsSync(path.join(cargoDir, 'src'))) {
+      fs.mkdirSync(path.join(cargoDir, 'src'));
+    }
+    fs.writeFileSync(path.join(cargoDir, 'src', 'main.rs'), code);
+  
+    // Compile the code using cargo
+    exec(`cargo test --manifest-path ${path.join(cargoDir, 'Cargo.toml')} --color always`, { cwd: cargoDir }, (error, stdout, stderr) => {
+        // Clean up the temporary files
+        try {
+            fs.unlinkSync(filePath);
+            fs.rmdirSync(cargoDir, { recursive: true });
+        } catch (cleanupError) {
+            console.error('Error during cleanup:', cleanupError);
+        }
+  
         if (error) {
             const response = {
                 success: false,
-                message: stderr
+                message: stdout + stderr
             };
             console.log(response);
-  
-            // Clean up the temporary files and exit gracefully
-            try {
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                }
-                if (fs.existsSync(outputFilePath)) {
-                    fs.unlinkSync(outputFilePath);
-                }
-            } catch (cleanupError) {
-                console.error('Error during cleanup:', cleanupError);
-            }
-  
             return res.json(response);
         }
   
-        // Execute the compiled binary
-        exec(outputFilePath, (runError, runStdout, runStderr) => {
-            if (runError) {
-                const response = {
-                    success: false,
-                    message: runStderr
-                };
-                console.log(response);
-  
-                // Clean up the temporary files and exit gracefully
-                try {
-                    if (fs.existsSync(filePath)) {
-                        fs.unlinkSync(filePath);
-                    }
-                    if (fs.existsSync(outputFilePath)) {
-                        fs.unlinkSync(outputFilePath);
-                    }
-                } catch (cleanupError) {
-                    console.error('Error during cleanup:', cleanupError);
-                }
-  
-                return res.json(response);
-            }
-  
-            // Clean up the temporary files
-            try {
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                }
-                if (fs.existsSync(outputFilePath)) {
-                    fs.unlinkSync(outputFilePath);
-                }
-            } catch (cleanupError) {
-                console.error('Error during cleanup:', cleanupError);
-            }
-  
-            const response = {
-                success: true,
-                message: runStdout
-            };
-            console.log(response);
-            return res.json(response);
-        });
+        const response = {
+            success: true,
+            message: stdout
+        };
+        console.log(response);
+        return res.json(response);
     });
   });
+  
   
 
 app.use("/api", exercisesRoutes);
