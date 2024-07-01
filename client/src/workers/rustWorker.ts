@@ -1,4 +1,4 @@
-import init, { compileRustProgram, runRustTests } from "../pkg_rusty/wasm_rust";
+import init, { compileRustProgram, runRustTests } from "../pkg_rusty/module/wasm_rust";
 import { antiCheatAppend } from "../utils/antiCheat";
 
 const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
