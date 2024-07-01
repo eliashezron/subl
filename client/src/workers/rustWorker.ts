@@ -1,7 +1,7 @@
 import init, { compileRustProgram, runRustTests } from "../pkg_rusty/module/wasm_rust";
 import { antiCheatAppend } from "../utils/antiCheat";
 
-const url = new URL("../pkg_rusty/wasm_rust_bg.wasm", import.meta.url).href;
+const url = new URL("../pkg_rusty/module/wasm_rust_bg.wasm", import.meta.url).href;
 
 (async () => {
   await init(url); // Initialize the WASM module
