@@ -143,6 +143,8 @@ hint = """
 Review the tests sections from the rust book
 """
 
+# SYSTEM
+
 [[exercises]]
 id = "system1"
 name = "system pallet 1"

@@ -23,7 +23,7 @@ export const MobileWarningDialog = () => {
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Starklings.app is not designed to be used on a smartphone, please switch to a bigger device to have the best experience.
+          Subl.app is not designed to be used on a smartphone, please switch to a bigger device to have the best experience.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
